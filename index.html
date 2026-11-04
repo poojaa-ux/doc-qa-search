@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Document Q&A</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 700px;
+            margin: 30px auto;
+            background-color: #f2f2f2;
+        }
+        .box {
+            background-color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 8px;
+            margin-bottom: 8px;
+        }
+        button {
+            background-color: blue;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+        }
+        .answer {
+            background-color: #e8f4ff;
+            padding: 10px;
+            margin-top: 10px;
+        }
+        .message {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Document Q&amp;A (Semantic Search)</h2>
+
+    <!-- Part 1: Upload -->
+    <div class="box">
+        <h3>1. Add a Document</h3>
+        <form action="/upload" method="POST" enctype="multipart/form-data">
+            <p>Choose a PDF or TXT file:</p>
+            <input type="file" name="file">
+            <p>Or paste some text:</p>
+            <textarea name="text" rows="4"></textarea>
+            <br>
+            <button type="submit">Upload</button>
+        </form>
+
+        {% if upload_message %}
+            <p class="message">{{ upload_message }}</p>
+        {% endif %}
+    </div>
+
+    <!-- Part 2: Ask a question -->
+    <div class="box">
+        <h3>2. Ask a Question</h3>
+        <form action="/ask" method="POST">
+            <input type="text" name="question" value="{{ question or '' }}" placeholder="Type your question here">
+            <button type="submit">Search</button>
+        </form>
+
+        {% if ask_message %}
+            <p class="message">{{ ask_message }}</p>
+        {% endif %}
+
+        {% if results %}
+            {% for r in results %}
+                <div class="answer">
+                    <b>Source:</b> {{ r.source }} &nbsp; | &nbsp; <b>Match score:</b> {{ r.score }}
+                    <p>{{ r.text }}</p>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+</body>
+</html>
